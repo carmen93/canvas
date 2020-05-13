@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giochiamo con canvas</title>
+    <!--Css-->
+    <style>
+        html,
+        body {
+            margin: 0;
+        }
+        header {
+            color: whitesmoke;
+            background-color: darkblue;
+            padding: 30px;
+            border-bottom: 5px solid gray;
+        }
+        body { cursor: url('data:image/x-icon;base64,AAACAAEAICAQAAAAAADoAgAAFgAAACgAAAAgAAAAQAAAAAEABAAAAAAAAAIAAAAAAAAAAAAAEAAAAAAAAAAAAAAAhYWFAPqv6ADgm4sASkpKAJ/l7QAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACIAAAAAAAAAAAAAAAAAAAEiIAAAAAAAAAAAAAAAAAAxEiIAAAAAAAAAAAAAAAADMxEgAAAAAAAAAAAAAAAAMzMxAAAAAAAAAAAAAAAAAzMzMAAAAAAAAAAAAAAAADMzMwAAAAAAAAAAAAAAAAMzMzAAAAAAAAAAAAAAAAAzMzMAAAAAAAAAAAAAAAADMzMwAAAAAAAAAAAAAAAABTMzAAAAAAAAAAAAAAAAAFVTMAAAAAAAAAAAAAAAAABFVQAAAAAAAAAAAAAAAAAARAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAD///////////////////////////////////////////////////////////////////////////////////////P////h////wP///4H///8D///+B////A////gf///wP///4H///+D////B////w////8///////////////w=='), auto; }
+    </style>
+    <!--Fine CSS-->
+</head>
+<body>
+    <!--html puro-->
+    <header>
+        <label for="colorpicker">Colore del pennello</label>
+        <input type="color" name="colorpicker" id="colorpicker" value="#bada55">
+        <label for="brush_width">Spessore del pennello</label>
+        <input type="number" name="brush" id="brush_width" min="1" value="10">
+<!--         <label for="tamarro">Modalità Tamarro</label>
+        <input type="button" value="tamarro"> -->
+    </header>
+    <!--Fine Html-->
+    <!--javascript-->
+    <canvas id="draw" width="800" height="800">
+    </canvas>
+    <script>
+        const canvas = document.querySelector("#draw");
+        /*const canvas = document.getElementById("draw");*//*equivalente alla riga sopra*/
+        const ctx = canvas.getContext("2d");
+        const colorpicker = document.querySelector("#colorpicker");
+        const brush_width = document.querySelector("#brush_width");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight; /*estende per l'intera finestra*/
+        /*sovrascrivere le proprietà*/
+        ctx.lineJoin = 'round';
+        ctx.lineCap = 'round';
+        ctx.lineWidth = 10;
+        ctx.strokeStyle = "#bada55";
+        /*funzioni per disegnare*/
+        let isDrawing = false;
+        let lastX = 0;
+        let lastY = 0;
+        //let hue = 0;
+        //let direction = false;
+        function draw(event){
+            if (!isDrawing) return;
+            console.log(event);
+            /*colore*/
+            //ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+            /*annuncia l'inizio del disegno*/
+            ctx.beginPath();
+            /*coordinate da dove iniziare a disegnare*/
+            ctx.moveTo(lastX, lastY);
+            /*coordinate fino a dove deve disegnare*/
+            ctx.lineTo(event.offsetX, event.offsetY);
+            ctx.stroke();
+            lastX = event.offsetX;
+            lastY = event.offsetY;
+            //hue++; /*incremento. equivalente di hue = hue +1*/
+            //if (hue >= 360){
+            //    hue = 0;
+            //}
+            /*ridimensionamento pennello*/
+            //if (ctx.lineWidth >= 50 || ctx.lineWidth <= 10) {
+            //    direction = !direction;
+            //}
+            //if (direction) {
+            //    ctx.lineWidth++;
+            //} else {
+            //    ctx.lineWidth--;
+            //}
+        }
+        colorpicker.addEventListener("change", (event) => {
+            ctx.strokeStyle = event.target.value;
+            console.log(event);
+        })
+        brush_width.addEventListener("change", (event) => {
+            ctx.lineWidth = event.target.value;
+        })
+/*         tamarro.addEventListener("change", (event){
+            let hue = 0;
+            let direction = false;
+            ctx.strokeStyle = `hsl(${hue}, 100%, 50%)`;
+            if (ctx.lineWidth >= 50 || ctx.lineWidth<=10) {
+                direction = !direction;
+            }
+            if (direction) {
+                ctx.lineWidth++;
+            } else {
+                ctx.lineWidth--;
+            }
+        }) */
+        /*movimenti del mouse*/
+        canvas.addEventListener("mousemove", draw);
+        canvas.addEventListener("mouseup", () => (isDrawing = false));
+        canvas.addEventListener("mouseout", () => (isDrawing = false));
+        canvas.addEventListener("mousedown", (event) => {
+            isDrawing = true; 
+            lastX = event.offsetX; 
+            lastY = event.offsetY;
+            hue++;
+            if (hue >= 360){
+                hue = 0;
+            }
+        });
+    </script>
+    <!--fine javascript-->
+</body>
+</html>
